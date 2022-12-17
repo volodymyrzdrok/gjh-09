@@ -1,0 +1,13 @@
+export const refs = {};
+refs.body = document.querySelector('body');
+refs.btnStart = document.querySelector('[data-start]');
+refs.btnStop = document.querySelector('[data-stop]');
+refs.timerInput = document.querySelector('#datetime-picker');
+refs.dataStartBtn = document.querySelector('[data-start-btn]');
+refs.dataStopBtn = document.querySelector('[data-stop-btn]');
+refs.timerContainer = document.querySelector('.timer');
+refs.daysData = document.querySelector('[data-days]');
+refs.hoursData = document.querySelector('[data-hours]');
+refs.minutesData = document.querySelector('[data-minutes]');
+refs.secondsData = document.querySelector('[data-seconds]');
+refs.form = document.querySelector('.form');
