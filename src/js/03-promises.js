@@ -1,32 +1,16 @@
 import Notiflix from 'notiflix';
 import 'flatpickr/dist/flatpickr.min.css';
 import { refs } from './refs';
-const { form } = refs;
-form.addEventListener('submit', onSubmit);
 
 function onSubmit(e) {
   e.preventDefault();
-  const delayMs = +e.target.delay.value;
-  const stepMs = +e.target.step.value;
-  const amount = +e.target.amount.value;
-
-  let newDelay = delayMs;
+  const { delay, step, amount } = valuesFromInputs(e.target);
+  let newDelay = delay;
   for (let i = 1; i <= amount; i++) {
-    createPromise(i, newDelay)
-      .then(({ position, delay }) => {
-        nitiflixSettings(
-          'success',
-          `Fulfilled promise ${position} in ${delay}ms`
-        );
-      })
-      .catch(({ position, delay }) => {
-        nitiflixSettings(
-          'failure',
-          `Rejected promise ${position} in ${delay}ms`
-        );
-      });
-    newDelay += stepMs;
+    createPromise(i, newDelay).then(onResolve).catch(onReject);
+    newDelay += step;
   }
+  e.target.reset();
 }
 
 function createPromise(position, delay) {
@@ -42,10 +26,33 @@ function createPromise(position, delay) {
   });
 }
 
+function onResolve({ position, delay }) {
+  return nitiflixSettings(
+    'success',
+    `Fulfilled promise ${position} in ${delay}ms`
+  );
+}
+function onReject({ position, delay }) {
+  return nitiflixSettings(
+    'failure',
+    `Rejected promise ${position} in ${delay}ms`
+  );
+}
+
+function valuesFromInputs(paramsEl) {
+  const formData = new FormData(paramsEl);
+  const valuesFromInputs = {};
+  for (let [key, value] of formData) {
+    valuesFromInputs[key] = +value;
+  }
+  return valuesFromInputs;
+}
+
 function nitiflixSettings(typeOfAttentions, message) {
   return Notiflix.Notify[typeOfAttentions](message, {
-    // timeout: 6000,
     distance: '20px',
     position: 'center-top',
   });
 }
+
+refs.form.addEventListener('submit', onSubmit);
